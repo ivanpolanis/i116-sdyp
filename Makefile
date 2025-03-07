@@ -5,23 +5,34 @@ CC = gcc
 TARGET = build
 SRC ?= Fuentes_Practica1/matrices.c
 N ?= 16
-BS ?= 16
+# BS ?= 16
 
 # Compilar el programa
 all: $(TARGET)
 
+# Target for default compilation
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
 
+# Target for single precision
+single: clean
+	$(CC) -O2 -lm -o $(TARGET) $(SRC)
+
+# Target for double precision
+double: clean
+	$(CC) -O2 -DDOUBLE -lm -o $(TARGET) $(SRC)
+
 # Ejecutar el programa con argumentos
-run: $(TARGET)
+run: 
 	@echo "Ejecutando con N=$(N), SRC = $(SRC)"
 	./$(TARGET) $(N) $(BS)
 
 all-run: all run
+single-run: single run
+double-run: double run
 
 # Limpiar los archivos generados
 clean:
 	$(RM) $(TARGET)
 
-.PHONY: all clean run all-run   
+.PHONY: all clean run single double all-run single-run double-run
