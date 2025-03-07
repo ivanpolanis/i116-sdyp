@@ -67,3 +67,53 @@ The performance improvement comes from how matrix multiplication accesses memory
 
 On the other hand, storing $B$ by columns ensures that the innermost loop accesses consecutive memory locations, maximizing cache hits and reducing the number of memory accesses. This small change takes better advantage of the CPU cache, which explains the significant performance difference.
 
+## B
+
+For all cases $N = 1024$
+
+
+In all cases, there are two implemented ways to solve the operation.
+
+
+### expMatrices1
+
+
+$$
+AB + AC + AD
+$$
+
+The first method, uses just one loop, and it's average time its: 
+    10.410 s.
+
+
+The second method uses four separate loops: one to compute $AB$, another for $AC$, and so on. Its average execution time is 9.981 s.
+
+At first, this result might seem counterintuitive — four loops instead of one should be less efficient. However, after further analysis, I realized that the overhead introduced by the additional loops is smaller than the time needed to access memory.
+
+But why does the first version access memory more frequently than the second one? The explanation lies in the cache size. In the first version, since all operations are performed inside a single loop, the amount of data being accessed simultaneously is larger. This likely causes cache blocks that are currently in use to be constantly overwritten by other blocks that the CPU also needs, increasing the number of cache misses.
+
+In the second version, each loop processes a smaller amount of data at a time, which fits better in the cache, improving cache locality and reducing memory accesses.
+
+### expMatrices2
+
+$$
+AB + CD
+$$
+
+The first method uses a single loop to perform the entire computation, with an average execution time of 7.049 s.
+
+The second method, on the other hand, uses three separate loops: one to compute $AB$, another to compute $CD$, and a final loop to sum the resulting matrices. Its average execution time is 6.721 s.
+
+Similarly to the previous case, the method that uses more loops is faster than the one that combines everything in a single loop. The reason behind this improvement is the same.
+
+### expMatrices3
+
+$$
+BA + CAD
+$$
+
+The first method uses two loops to perform the entire computation, with an average execution time of 9.750 s.
+
+The second method, on the other hand, uses four separate loops. Its average execution time is 9.981 s.
+ 
+
