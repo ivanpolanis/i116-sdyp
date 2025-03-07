@@ -5,7 +5,7 @@ CC = gcc
 TARGET = build
 SRC ?= Fuentes_Practica1/matrices.c
 N ?= 16
-T ?= 16
+BS ?= 16
 
 # Compilar el programa
 all: $(TARGET)
@@ -16,7 +16,7 @@ $(TARGET): $(SRC)
 # Ejecutar el programa con argumentos
 run: $(TARGET)
 	@echo "Ejecutando con N=$(N), SRC = $(SRC)"
-	./$(TARGET) $(N)
+	./$(TARGET) $(N) $(BS)
 
 all-run: all run
 

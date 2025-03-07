@@ -116,4 +116,62 @@ The first method uses two loops to perform the entire computation, with an avera
 
 The second method, on the other hand, uses four separate loops. Its average execution time is 9.981 s.
  
+## C
+
+$N = 1024$
+
+For performing the matrix multiplication $AA$, two methods were used to test which one achieves better performance.
+
+The first method consists of a straightforward matrix multiplication, with an average execution time of 4.001 s.
+
+In the second method, an auxiliary matrix was introduced, where matrix $A$ is stored by columns — effectively the transpose of $A$. This method achieved an average execution time of 3.319 s.
+
+## D
+
+For $N = 1024$
+
+| Block size |  Time  |
+| :--------: | :----: |
+| 4          | 5.078  |
+| 8          | 3.812  |
+| 16         | 3.667  |
+| 32         | 3.642  |
+| 64         | 3.626  |
+| 128        | 3.631  |
+| 256        | 3.599  |
+| 512        | 3.532  |
+| 1024       | 3.487  |
+
+For $N = 2048$
+
+| Block size |  Time  |
+| :--------: | :----: |
+| 512        | 28.490 |
+| 1024       | 28.601 |        
+| 2048       | 27.986 |        
+
+After running the experiments multiple times and comparing the results with the version that does not use matrix multiplication by blocks, the non-blocked version consistently shows slightly better performance. This result is surprising because blocking is supposed to improve cache locality by processing smaller portions of the matrix at a time.
+
+One possible explanation is that the implementation of the blocked version might introduce additional overhead from managing loops and temporary buffers, which could outweigh the benefits of cache optimization, especially for smaller matrix sizes. Additionally, the cache size and the way the blocking is applied may not be fully optimized for the system architecture.
+
+## E
+
+For performing the operations:
+
+$$
+MU ~~ ML ~~ UM ~~ LM
+$$
+
+there are two possible ways to store triangular matrices:
+
+- Full storage: Storing the entire $N \times N$ matrix, including the zero elements in the unused triangular part.
+- Compressed storage: Storing only the relevant triangular part, which reduces the size to $N \cdot (N + 1) / 2$ elements.
+
+Both methods yield the same result, but the execution times differ.
+
+In the first method, where the matrix is stored with zeros, the four operations take 9.096 s on average.
+
+In the second method, where only the necessary elements are stored, the smaller matrix size improves performance, with an average execution time of 8.446 s.
+
+The improvement happens because the compressed storage reduces the amount of memory accesses and allows better cache utilization, resulting in fewer cache misses and faster operations.
 
