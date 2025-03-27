@@ -3,9 +3,9 @@ CC = gcc
 # CFLAGS = -fopenmp -Wall -O2
 # CFLAGS = -pthread 
 TARGET = build
-SRC ?= Fuentes_Practica1/matrices.c
-N ?= 16
-# BS ?= 16
+SRC ?= p2/1.c
+UTILS ?= utils/utils.c
+N ?= 8
 
 # Compilar el programa
 all: $(TARGET)
@@ -13,6 +13,10 @@ all: $(TARGET)
 # Target for default compilation
 $(TARGET): $(SRC)
 	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+
+
+pt: clean
+	$(CC) -pthread -o $(TARGET) $(SRC) $(UTILS)
 
 # Target for single precision
 single: clean
@@ -24,10 +28,11 @@ double: clean
 
 # Ejecutar el programa con argumentos
 run: 
-	@echo "Ejecutando con N=$(N), SRC = $(SRC)"
+	@echo "Ejecutando con T=$(N), SRC = $(SRC)"
 	./$(TARGET) $(N) $(BS)
 
 all-run: all run
+pt-run: pt run
 single-run: single run
 double-run: double run
 
@@ -35,4 +40,4 @@ double-run: double run
 clean:
 	$(RM) $(TARGET)
 
-.PHONY: all clean run single double all-run single-run double-run
+.PHONY: all clean run single double all-run pt-run single-run double-run

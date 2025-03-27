@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include <stdlib.h>
 #include <sys/time.h>
 /**********Para calcular tiempo*************************************/
@@ -10,3 +12,10 @@ double dwalltime() {
   return sec;
 }
 /****************************************************************/
+
+void print_performance(int threads, double seq_time, double par_time) {
+  double speedup = seq_time / par_time;
+  double efficiency = speedup / threads;
+  printf("Threads: %d - Speedup: %f - Efficiency: %f - Execution time: %f.\n",
+         threads, speedup, efficiency, par_time);
+}
