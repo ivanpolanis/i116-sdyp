@@ -3,7 +3,7 @@ CC = gcc
 # CFLAGS = -fopenmp -Wall -O2
 # CFLAGS = -pthread 
 TARGET = build
-SRC ?= p2/2.c
+SRC ?= p2/3.c
 UTILS ?= utils/utils.c
 N ?= 8
 
