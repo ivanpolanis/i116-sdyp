@@ -1,9 +1,7 @@
 # Variables
 CC = gcc
-# CFLAGS = -fopenmp -Wall -O2
-# CFLAGS = -pthread 
 TARGET = build
-SRC ?= p2/5.c
+SRC ?= p2/6.c
 UTILS ?= utils/utils.c
 N ?= 8
 
