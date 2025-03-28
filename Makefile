@@ -1,9 +1,9 @@
 # Variables
 CC = gcc
 TARGET = build
-SRC ?= p2/6.c
+SRC ?= p3/src/ejercicio1.c
 UTILS ?= utils/utils.c
-N ?= 8
+# N ?= 8
 
 # Compilar el programa
 all: $(TARGET)
@@ -16,6 +16,10 @@ $(TARGET): $(SRC)
 pt: clean
 	$(CC) -pthread -o $(TARGET) $(SRC) $(UTILS)
 
+mp: clean
+	$(CC) -fopenmp -o $(TARGET) $(SRC) $(UTILS)
+
+
 # Target for single precision
 single: clean
 	$(CC) -O2 -lm -o $(TARGET) $(SRC)
@@ -26,11 +30,12 @@ double: clean
 
 # Ejecutar el programa con argumentos
 run: 
-	@echo "Ejecutando con T=$(N), SRC = $(SRC)"
-	./$(TARGET) $(N) $(BS)
+	@echo "Ejecutando con N=$(N) - T=$(T) - SRC = $(SRC)"
+	./$(TARGET) $(N) $(T)
 
 all-run: all run
 pt-run: pt run
+mp-run: mp run
 single-run: single run
 double-run: double run
 
@@ -38,4 +43,4 @@ double-run: double run
 clean:
 	$(RM) $(TARGET)
 
-.PHONY: all clean run single double all-run pt-run single-run double-run
+.PHONY: all clean run single double all-run pt-run mp-run single-run double-run
