@@ -1,9 +1,7 @@
+#include "../../utils/utils.h"
 #include <omp.h>
 #include <stdio.h>
 #include <stdlib.h>
-
-/* Time in seconds from some point in the past */
-double dwalltime();
 
 int main(int argc, char *argv[]) {
   double *A, *B, *C, *D, *E;
@@ -40,22 +38,33 @@ int main(int argc, char *argv[]) {
 
   timetick = dwalltime();
 
-  // Realiza la multiplicacion D= AxB
-  for (i = 0; i < N; i++) {
-    for (j = 0; j < N; j++) {
-      D[i * N + j] = 0;
-      for (k = 0; k < N; k++) {
-        D[i * N + j] = D[i * N + j] + A[i * N + k] * B[k + j * N];
+#pragma omp parallel sections private(i, j, k)
+  {
+#pragma omp section
+    {
+
+      // Realiza la multiplicacion D= AxB
+      for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+          D[i * N + j] = 0;
+          for (k = 0; k < N; k++) {
+            D[i * N + j] = D[i * N + j] + A[i * N + k] * B[k + j * N];
+          }
+        }
       }
     }
-  }
 
-  // Realiza la multiplicacion E= CxB
-  for (i = 0; i < N; i++) {
-    for (j = 0; j < N; j++) {
-      E[i * N + j] = 0;
-      for (k = 0; k < N; k++) {
-        E[i * N + j] = E[i * N + j] + C[i * N + k] * B[k + j * N];
+#pragma omp section
+    {
+
+      // Realiza la multiplicacion E= CxB
+      for (i = 0; i < N; i++) {
+        for (j = 0; j < N; j++) {
+          E[i * N + j] = 0;
+          for (k = 0; k < N; k++) {
+            E[i * N + j] = E[i * N + j] + C[i * N + k] * B[k + j * N];
+          }
+        }
       }
     }
   }
@@ -80,17 +89,4 @@ int main(int argc, char *argv[]) {
   free(D);
   free(E);
   return (0);
-}
-
-/*****************************************************************/
-
-#include <sys/time.h>
-
-double dwalltime() {
-  double sec;
-  struct timeval tv;
-
-  gettimeofday(&tv, NULL);
-  sec = tv.tv_sec + tv.tv_usec / 1000000.0;
-  return sec;
 }

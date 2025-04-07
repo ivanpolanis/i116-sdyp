@@ -1,7 +1,7 @@
 # Variables
 CC = gcc
 TARGET = build
-SRC ?= p3/src/ejercicio1.c
+SRC ?= p3/src/mxmSections.c
 UTILS ?= utils/utils.c
 # N ?= 8
 
@@ -17,7 +17,7 @@ pt: clean
 	$(CC) -pthread -o $(TARGET) $(SRC) $(UTILS)
 
 mp: clean
-	$(CC) -fopenmp -o $(TARGET) $(SRC) $(UTILS)
+	$(CC) -lm -fopenmp -o $(TARGET) $(SRC) $(UTILS)
 
 
 # Target for single precision
