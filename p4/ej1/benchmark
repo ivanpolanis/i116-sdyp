@@ -1,0 +1,42 @@
+#!/bin/bash
+
+sizes=(512 1024 2048)
+processes=(1 2 4)
+src=("p4/ej1/ej1sec.c" "p4/ej1/ej1pxp.c" "p4/ej1/ej1col.c")
+exe=("all-run" "mpi" "mpi")
+
+echo "version,N,P,tiempo,speedup,eficiencia" >resultados.csv
+
+declare -A times
+
+for i in "${!exe[@]}"; do
+  version_name=$(basename "${src[$i]}" .c) # ejemplo: ej1sec
+  make_target="${exe[$i]}"                 # ejemplo: all-run o mpi
+
+  for N in "${sizes[@]}"; do
+    export N # Asumimos que el programa toma el valor de N desde una variable de entorno
+
+    for P in "${processes[@]}"; do
+      if [[ "$version_name" == "ej1sec" && $P -ne 1 ]]; then
+        continue # La versión secuencial solo corre con 1 proceso
+      fi
+      echo "$version_name,$N,$P,$make_target"
+
+      make_dir="../../"
+      # Compila y ejecuta según la cantidad de procesos
+      tiempo=$(make -C "$make_dir" "$make_target" SRC=${src[$i]} N=$N T=$P | tail -n 2 | grep -Eo '[0-9]+\.[0-9]+')
+
+      if [[ "$version_name" == "ej1sec" ]]; then
+        times["$N"]="$tiempo"
+        speedup="1.00000"
+        eficiencia="1.00000"
+      else
+        Tseq=${times[$N]}
+        speedup=$(echo "scale=5; $Tseq / $tiempo" | bc)
+        eficiencia=$(echo "scale=5; $speedup/ $P" | bc)
+      fi
+
+      echo "$version_name,$N,$P,$tiempo,$speedup,$eficiencia" >>resultados.csv
+    done
+  done
+done

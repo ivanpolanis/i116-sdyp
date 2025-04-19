@@ -1,7 +1,9 @@
 # Variables
 CC = gcc
+MPIC = mpicc
+MPIR = mpirun
 TARGET = build
-SRC ?= p3/src/mxmSections.c
+SRC ?= /home/ivan/Documents/i116-sdyp/p4/ej1col.c
 UTILS ?= utils/utils.c
 # N ?= 8
 
@@ -10,7 +12,7 @@ all: $(TARGET)
 
 # Target for default compilation
 $(TARGET): $(SRC)
-	$(CC) $(CFLAGS) -o $(TARGET) $(SRC)
+	$(CC) $(CFLAGS) -o $(TARGET) $(SRC) $(UTILS)
 
 
 pt: clean
@@ -18,6 +20,10 @@ pt: clean
 
 mp: clean
 	$(CC) -lm -fopenmp -o $(TARGET) $(SRC) $(UTILS)
+
+mpi: clean
+	$(MPIC) -o $(TARGET) $(SRC)
+	$(MPIR) -np $(T) $(TARGET) $(N)
 
 
 # Target for single precision
@@ -33,7 +39,7 @@ run:
 	@echo "Ejecutando con N=$(N) - T=$(T) - SRC = $(SRC)"
 	./$(TARGET) $(N) $(T)
 
-all-run: all run
+all-run: clean all run
 pt-run: pt run
 mp-run: mp run
 single-run: single run
@@ -43,4 +49,4 @@ double-run: double run
 clean:
 	$(RM) $(TARGET)
 
-.PHONY: all clean run single double all-run pt-run mp-run single-run double-run
+.PHONY: all clean run single double all-run pt-run mp-run single-run double-run mpi
