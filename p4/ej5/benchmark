@@ -1,5 +1,5 @@
 #!/bin/bash
 
 mpicc -o build ej5p.c
-cat words.txt | mpirun -np 4 build
+cat words.txt | mpirun -np 2 build
 rm build

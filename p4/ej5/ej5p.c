@@ -65,26 +65,21 @@ int main(int argc, char *argv[]) {
 
     buffer[bytesRead] = '\0';
 
+    char *delimiter = " \t\n'<>/,.;:-";
+    char *token = strtok(buffer, delimiter);
+
+    while (token != NULL) {
+      words[total_words++] = token;
+      token = strtok(NULL, delimiter);
+    }
+
 #ifdef DEBUG
-    printf("%s", buffer);
-#endif /* ifdef DEBUG */
+    for (int i = 0; i < total_words; i++) {
+      printf("%s\n", words[i]);
+    }
+#endif
   }
 
-  // WordCount *word_counts = NULL;
-  //
-  // char *pch;
-  //
-  // pch = strtok(buffer, " ");
-  // while (pch != NULL) {
-  //   add_word(&word_counts, pch);
-  //   pch = strtok(NULL, " \n,'.");
-  // }
-  //
-  // sort_by_count(&word_counts);
-  // print_table(&word_counts, 5);
-  //
-  //
-  //
   MPI_Finalize();
   return EXIT_SUCCESS;
 }
