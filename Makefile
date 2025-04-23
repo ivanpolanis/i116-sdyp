@@ -3,7 +3,7 @@ CC = gcc
 MPIC = mpicc
 MPIR = mpirun
 TARGET = build
-SRC ?= /home/ivan/Documents/i116-sdyp/p4/ej4/ej4p.c
+SRC ?= /home/ivan/Documents/i116-sdyp/p5/ej5/ej5sec.c
 UTILS ?= utils/utils.c
 # N ?= 8
 

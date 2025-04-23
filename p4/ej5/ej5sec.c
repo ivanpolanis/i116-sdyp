@@ -1,0 +1,68 @@
+#include "../../utils/uthash.h"
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+#define MAX_LEN 1024 * 1024
+
+typedef struct {
+  char word[100];    // clave: la palabra
+  int count;         // valor: cantidad de ocurrencias
+  UT_hash_handle hh; // manejador para uthash
+} WordCount;
+
+void print_table(WordCount **word_counts, int limit) {
+
+  WordCount *s;
+
+  for (s = *word_counts; s != NULL && limit > 0;
+       s = (WordCount *)(s->hh.next), limit--) {
+    printf("%s: %d\n", s->word, s->count);
+  }
+}
+
+int by_count(const WordCount *a, const WordCount *b) {
+  return b->count - a->count;
+}
+
+void sort_by_count(WordCount **word_counts) {
+  HASH_SORT(*word_counts, by_count);
+}
+
+void add_word(WordCount **word_counts, char *word) {
+
+  WordCount *entry = NULL;
+
+  HASH_FIND_STR(*word_counts, word, entry);
+
+  if (entry == NULL) {
+    entry = (WordCount *)malloc(sizeof *entry);
+    strcpy(entry->word, word);
+    entry->count = 1;
+    HASH_ADD_STR(*word_counts, word, entry);
+  } else {
+    entry->count++;
+  }
+}
+
+int main(int argc, char *argv[]) {
+  char buffer[MAX_LEN];
+  size_t bytesRead = fread(buffer, 1, MAX_LEN, stdin);
+
+  buffer[bytesRead] = '\0';
+
+  WordCount *word_counts = NULL;
+
+  char *pch;
+
+  pch = strtok(buffer, " ");
+  while (pch != NULL) {
+    add_word(&word_counts, pch);
+    pch = strtok(NULL, " \n,'.");
+  }
+
+  sort_by_count(&word_counts);
+  print_table(&word_counts, 5);
+
+  return EXIT_SUCCESS;
+}
